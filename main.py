@@ -90,7 +90,8 @@ if __name__ == '__main__':
         # video
         if not grabbed:
 		break
-        detectedFaces = helper.detectFace(frame)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        detectedFaces = helper.detectFace(gray)
 
         if detectedFaces is not None:
             for face in detectedFaces:
