@@ -51,7 +51,7 @@ class HiddenLayer:
 class cvHelper:
     def __init__(self):
         self.haarFace = cv2.CascadeClassifier("haarcascade_frontalface_default.xml");
-        self.haarEyes = cv2.CascadeClassifier("haarcascade_eyes.xml");
+        self.haarEyes = cv2.CascadeClassifier("haarcascade_eye.xml");
     def detectFace(self,image):
         detectedFaces = self.haarFace.detectMultiScale(image,1.3,5)
         return detectedFaces
@@ -92,12 +92,19 @@ if __name__ == '__main__':
 		break
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         detectedFaces = helper.detectFace(gray)
-
+        detectedEyes = helper.detectEye(gray)
         if detectedFaces is not None:
             for face in detectedFaces:
                    cv2.rectangle(frame,(face[0],face[1]),
                                           (face[0]+face[2],face[1]+face[3]),
                                                          (155, 255, 25),2)
+        if detectedEyes is not None:
+            for eye in detectedEyes:
+                    cv2.rectangle(frame, (eye[0],eye[1]),
+                            (eye[0]+eye[2],eye[1]+eye[3]),
+                            (155,55,200),2)
+
+                    
         # show the frame and record if the user presses a key
         #frame[y_offset:y_offset+img.shape[0], x_offset:x_offset+img.shape[1]] = img
         cv2.imshow("Frame", frame)
