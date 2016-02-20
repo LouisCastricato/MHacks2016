@@ -10,6 +10,7 @@ import gzip
 import os
 import sys
 import timeit
+import math
 
 #Machine learning includes
 import numpy as np
@@ -20,7 +21,15 @@ import theano.tensor as T
 import cv2
 import argparse
 
+def rots(e1, e2, ordis=1):
+	ydif = e2[1]-e1[1]
+	xdif = e2[0]-e1[0]
+	yrot = math.atan(ydif/xdif)*(180/3.14159)
+	dis = (xdif**2 + ydif**2)**.5
+	if dis < 0.75*ordis:
+		return[yrot,1]
 
+	return [yrot, 0]
 class HiddenLayer:
     def __init__(self,input, W_in, b_in, activator = T.tanh):
         
@@ -47,7 +56,6 @@ class HiddenLayer:
         
         lin_func = T.dot(self.W,input) + self.b
         self.y_pred_x = activator(lin_func)
-        
 class cvHelper:
     def __init__(self):
         self.haarFace = cv2.CascadeClassifier("haarcascade_frontalface_default.xml");
@@ -103,8 +111,12 @@ if __name__ == '__main__':
                     cv2.rectangle(frame, (eye[0],eye[1]),
                             (eye[0]+eye[2],eye[1]+eye[3]),
                             (155,55,200),2)
+	if len(detectedEyes) >= 2:
+	    vec1 = (2* detectedEyes[0][0] + 0.5 * detectedEyes[0][2],2* detectedEyes[0][1] + 0.5 * detectedEyes[0][3])
+	    vec2 = (2* detectedEyes[1][0] + 0.5 * detectedEyes[1][2],2* detectedEyes[1][1] + 0.5 * detectedEyes[1][3])
+            print rots(vec1,vec2)
 
-                    
+         
         # show the frame and record if the user presses a key
         #frame[y_offset:y_offset+img.shape[0], x_offset:x_offset+img.shape[1]] = img
         cv2.imshow("Frame", frame)
