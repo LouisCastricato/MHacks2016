@@ -12,14 +12,11 @@ import sys
 import timeit
 import math
 
-#Machine learning includes
-import numpy as np
-import theano
-import theano.tensor as T
-
 #Computer Vision Includes
 import cv2
 import argparse
+
+import MLHelper
 
 def rots(e1, e2, ordis=1):
 	ydif = e2[1]-e1[1]
@@ -32,32 +29,7 @@ def rots(e1, e2, ordis=1):
 		return[yrot,1]
 
 	return [yrot, 0]
-class HiddenLayer:
-    def __init__(self,input, W_in, b_in, activator = T.tanh):
-        
-        if W_in is None:
-            W_values = numpy.asarray(
-                rng.uniform(
-                    low=-numpy.sqrt(6. / (n_in + n_out)),
-                    high=numpy.sqrt(6. / (n_in + n_out)),
-                    size=(n_in, n_out)
-                ),
-                dtype=theano.config.floatX
-            )
-            if activation == theano.tensor.nnet.sigmoid:
-                W_values *= 4
 
-            W_in = theano.shared(value=W_values, name='W', borrow=True)
-        if b_in is None:
-            b_values = numpy.zeros((n_out,), dtype=theano.config.floatX)
-            b_in = theano.shared(value=b_values, name='b', borrow=True)
-            
-            
-        self.W = W_in
-        self.b = b_in
-        
-        lin_func = T.dot(self.W,input) + self.b
-        self.y_pred_x = activator(lin_func)
 class cvHelper:
     def __init__(self):
         self.haarFace = cv2.CascadeClassifier("haarcascade_frontalface_default.xml");
