@@ -48,7 +48,18 @@ class HiddenLayer:
         lin_func = T.dot(self.W,input) + self.b
         self.y_pred_x = activator(lin_func)
         
-        
+class cvHelper:
+    def __init__(self):
+        self.haarFace = cv2.CascadeClassifier("haarcascade_frontalface_default.xml");
+        self.haarEyes = cv2.CascadeClassifier("haarcascade_eyes.xml");
+    def detectFace(self,image):
+        detectedFaces = self.haarFace.detectMultiScale(image,1.3,5)
+        return detectedFaces
+    def detectEye(self,image):
+        detectedEyes = self.haarEyes.detectMultiScale(image,1.3,5)
+        return detectedEyes
+
+
 if __name__ == '__main__':    
     """
     #Training Code
@@ -71,16 +82,23 @@ if __name__ == '__main__':
     img = cv2.imread("dickbutt.png")
     x_offset = 0
     y_offset = 0
+    helper = cvHelper()
     while True:
         # grab the current frame
         (grabbed, frame) = camera.read()
- 
         # check to see if we have reached the end of the
         # video
         if not grabbed:
 		break
+        detectedFaces = helper.detectFace(frame)
+
+        if detectedFaces is not None:
+            for face in detectedFaces:
+                   cv2.rectangle(frame,(face[0],face[1]),
+                                          (face[0]+face[2],face[1]+face[3]),
+                                                         (155, 255, 25),2)
         # show the frame and record if the user presses a key
-        frame[y_offset:y_offset+img.shape[0], x_offset:x_offset+img.shape[1]] = img
+        #frame[y_offset:y_offset+img.shape[0], x_offset:x_offset+img.shape[1]] = img
         cv2.imshow("Frame", frame)
         key = cv2.waitKey(1) & 0xFF
 
